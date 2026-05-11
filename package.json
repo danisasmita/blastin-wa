@@ -1,0 +1,26 @@
+{
+  "name": "whaticket-community",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Whaticket Community monorepo root",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "backend/src/**/*.ts": [
+      "npx --prefix backend eslint --fix",
+      "npx --prefix backend prettier --write"
+    ],
+    "frontend/src/**/*.{js,jsx}": [
+      "npx --prefix frontend eslint --fix",
+      "npx --prefix frontend prettier --write"
+    ],
+    "frontend/src/**/*.{css,json,md}": [
+      "npx --prefix frontend prettier --write"
+    ]
+  }
+}

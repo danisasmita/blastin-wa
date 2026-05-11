@@ -1,0 +1,22 @@
+# Build outputs
+backend/dist/
+frontend/dist/
+frontend/build/
+
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Docker & env
+.env
+.env.*
+!.env.example
+
+# Misc
+coverage/
+.husky/

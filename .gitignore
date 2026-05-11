@@ -1,0 +1,8 @@
+.docker/data/
+ssl/
+.env
+.wwebjs_auth
+.wwebjs_cache
+.idea
+node_modules/
+.DS_Store
