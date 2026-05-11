@@ -10,10 +10,12 @@ services:
       context: ./backend
       dockerfile: ./Dockerfile
     environment:
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASS=${MYSQL_ROOT_PASSWORD:-strongpassword}
-      - DB_NAME=${MYSQL_DATABASE:-whaticket}
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASS:-strongpassword}
+      - DB_NAME=${DB_NAME:-whaticket}
+      - DB_SSL=${DB_SSL:-false}
       - JWT_SECRET=${JWT_SECRET:-3123123213123}
       - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-75756756756}
       - BACKEND_URL=${BACKEND_URL:-http://localhost}
@@ -21,6 +23,11 @@ services:
       - PROXY_PORT=${PROXY_PORT:-8080}
       - CHROME_ARGS=--no-sandbox --disable-setuid-sandbox
       - WHATSAPP_PROVIDER=${WHATSAPP_PROVIDER:-whaileys}
+      - NODE_OPTIONS=--max-old-space-size=256
+    deploy:
+      resources:
+        limits:
+          memory: 350M
     ports:
       - ${BACKEND_PORT:-8080}:3000
     volumes:
