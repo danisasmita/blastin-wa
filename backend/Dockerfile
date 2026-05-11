@@ -22,6 +22,6 @@ ENV PORT=3000
 EXPOSE 3000
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD dockerize -wait tcp://${DB_HOST}:3306 \
+CMD dockerize -wait tcp://${DB_HOST}:${DB_PORT:-3306} \
   && npx sequelize db:migrate \
   && node dist/server.js
