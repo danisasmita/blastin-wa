@@ -26,4 +26,10 @@ routes.use(queueRoutes);
 routes.use(quickAnswerRoutes);
 routes.use("/api/messages", apiRoutes);
 
+// Healthcheck route for UptimeRobot
+routes.get("/", (req, res) => {
+  res.status(200).send("Blastin WA Backend is UP and RUNNING!");
+});
+
+
 export default routes;
