@@ -357,6 +357,7 @@ const messages = {
           searchParam: "Filtro de contacto",
           searchHelp: "Filtra contactos por nombre o número.",
           specificContacts: "Contactos especificos",
+          searchContacts: "Buscar contactos...",
           queueFilter: "Filtro por colas",
           includeGroups: "Incluir grupos",
           onlyWithEmail: "Solo contactos con correo",
