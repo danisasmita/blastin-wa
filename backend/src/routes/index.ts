@@ -11,6 +11,7 @@ import whatsappSessionRoutes from "./whatsappSessionRoutes";
 import queueRoutes from "./queueRoutes";
 import quickAnswerRoutes from "./quickAnswerRoutes";
 import apiRoutes from "./apiRoutes";
+import campaignRoutes from "./campaignRoutes";
 
 const routes = Router();
 
@@ -24,6 +25,7 @@ routes.use(messageRoutes);
 routes.use(whatsappSessionRoutes);
 routes.use(queueRoutes);
 routes.use(quickAnswerRoutes);
+routes.use(campaignRoutes);
 routes.use("/api/messages", apiRoutes);
 
 // Healthcheck route for UptimeRobot

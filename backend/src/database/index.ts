@@ -11,6 +11,9 @@ import WhatsappQueue from "../models/WhatsappQueue";
 import UserQueue from "../models/UserQueue";
 import QuickAnswer from "../models/QuickAnswer";
 import WppKey from "../models/WppKey";
+import CampaignTemplate from "../models/CampaignTemplate";
+import Campaign from "../models/Campaign";
+import CampaignRecipient from "../models/CampaignRecipient";
 
 // eslint-disable-next-line
 const dbConfig = require("../config/database");
@@ -30,7 +33,10 @@ const models = [
   WhatsappQueue,
   UserQueue,
   QuickAnswer,
-  WppKey
+  WppKey,
+  CampaignTemplate,
+  Campaign,
+  CampaignRecipient
 ];
 
 sequelize.addModels(models);
