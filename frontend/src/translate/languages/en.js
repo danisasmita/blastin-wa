@@ -225,6 +225,7 @@ const messages = {
       },
       ticketsQueueSelect: {
         placeholder: "Queues",
+        noQueuesAssigned: "No queues assigned to your user",
       },
       tickets: {
         toasts: {

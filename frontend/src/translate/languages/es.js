@@ -228,6 +228,7 @@ const messages = {
       },
       ticketsQueueSelect: {
         placeholder: "Linhas",
+        noQueuesAssigned: "No hay colas asignadas a tu usuario",
       },
       tickets: {
         toasts: {

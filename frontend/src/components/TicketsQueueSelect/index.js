@@ -37,7 +37,7 @@ const TicketsQueueSelect = ({
           }}
           renderValue={() => i18n.t("ticketsQueueSelect.placeholder")}
         >
-          {userQueues?.length > 0 &&
+          {userQueues?.length > 0 ? (
             userQueues.map(queue => (
               <MenuItem dense key={queue.id} value={queue.id}>
                 <Checkbox
@@ -50,7 +50,14 @@ const TicketsQueueSelect = ({
                 />
                 <ListItemText primary={queue.name} />
               </MenuItem>
-            ))}
+            ))
+          ) : (
+            <MenuItem dense disabled>
+              <ListItemText
+                primary={i18n.t("ticketsQueueSelect.noQueuesAssigned")}
+              />
+            </MenuItem>
+          )}
         </Select>
       </FormControl>
     </div>

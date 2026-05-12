@@ -227,6 +227,7 @@ const messages = {
       },
       ticketsQueueSelect: {
         placeholder: "Filas",
+        noQueuesAssigned: "Nenhuma fila vinculada ao seu usuario",
       },
       tickets: {
         toasts: {
