@@ -13,6 +13,7 @@ contactRoutes.post(
 );
 
 contactRoutes.get("/contacts", isAuth, ContactController.index);
+contactRoutes.get("/contacts/all", isAuth, ContactController.listAll);
 
 contactRoutes.get("/contacts/:contactId", isAuth, ContactController.show);
 

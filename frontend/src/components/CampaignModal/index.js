@@ -17,6 +17,7 @@ import {
 import api from "../../services/api";
 import { i18n } from "../../translate/i18n";
 import toastError from "../../errors/toastError";
+import CampaignContactSelect from "../CampaignContactSelect";
 
 const initialState = {
   name: "",
@@ -25,13 +26,14 @@ const initialState = {
   body: "",
   scheduledAt: "",
   sendDelayMs: 1500,
-  segmentFilters: {
-    searchParam: "",
-    includeGroups: false,
-    onlyWithEmail: false,
-    queueIds: [],
-  },
-};
+    segmentFilters: {
+      searchParam: "",
+      includeGroups: false,
+      onlyWithEmail: false,
+      queueIds: [],
+      contactIds: [],
+    },
+  };
 
 const formatDateTimeLocal = value => {
   if (!value) return "";
@@ -79,6 +81,7 @@ const CampaignModal = ({ open, onClose, campaign, whatsApps = [] }) => {
               includeGroups: Boolean(campaign.segmentFilters?.includeGroups),
               onlyWithEmail: Boolean(campaign.segmentFilters?.onlyWithEmail),
               queueIds: campaign.segmentFilters?.queueIds || [],
+              contactIds: campaign.segmentFilters?.contactIds || [],
             },
           }
         : initialState
@@ -116,6 +119,7 @@ const CampaignModal = ({ open, onClose, campaign, whatsApps = [] }) => {
       segmentFilters: {
         ...formData.segmentFilters,
         queueIds: (formData.segmentFilters.queueIds || []).map(Number),
+        contactIds: (formData.segmentFilters.contactIds || []).map(Number),
       },
     };
 
@@ -224,6 +228,19 @@ const CampaignModal = ({ open, onClose, campaign, whatsApps = [] }) => {
           onChange={handleSegmentChange}
           fullWidth
           helperText={i18n.t("campaigns.fields.searchHelp")}
+        />
+
+        <CampaignContactSelect
+          selectedContactIds={formData.segmentFilters.contactIds}
+          onChange={value =>
+            setFormData(prevState => ({
+              ...prevState,
+              segmentFilters: {
+                ...prevState.segmentFilters,
+                contactIds: value,
+              },
+            }))
+          }
         />
 
         <FormControl fullWidth margin="dense">

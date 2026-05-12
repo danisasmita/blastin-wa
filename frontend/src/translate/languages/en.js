@@ -343,6 +343,7 @@ const messages = {
           sendDelayMs: "Delay between sends (ms)",
           searchParam: "Contact search filter",
           searchHelp: "Filter contacts by name or number.",
+          specificContacts: "Specific contacts",
           queueFilter: "Ticket queues filter",
           includeGroups: "Include groups",
           onlyWithEmail: "Only contacts with e-mail",

@@ -7,6 +7,7 @@ import CreateContactService from "../services/ContactServices/CreateContactServi
 import ShowContactService from "../services/ContactServices/ShowContactService";
 import UpdateContactService from "../services/ContactServices/UpdateContactService";
 import DeleteContactService from "../services/ContactServices/DeleteContactService";
+import ListAllContactsService from "../services/ContactServices/ListAllContactsService";
 
 import CheckContactNumber from "../services/WbotServices/CheckNumber";
 import CheckIsValidContact from "../services/WbotServices/CheckIsValidContact";
@@ -44,6 +45,15 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   });
 
   return res.json({ contacts, count, hasMore });
+};
+
+export const listAll = async (
+  _req: Request,
+  res: Response
+): Promise<Response> => {
+  const contacts = await ListAllContactsService();
+
+  return res.json(contacts);
 };
 
 export const getContact = async (

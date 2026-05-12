@@ -347,6 +347,7 @@ const messages = {
           sendDelayMs: "Intervalo entre envíos (ms)",
           searchParam: "Filtro de contacto",
           searchHelp: "Filtra contactos por nombre o número.",
+          specificContacts: "Contactos especificos",
           queueFilter: "Filtro por colas",
           includeGroups: "Incluir grupos",
           onlyWithEmail: "Solo contactos con correo",
