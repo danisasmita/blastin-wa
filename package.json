@@ -1,8 +1,8 @@
 {
-  "name": "whaticket-community",
+  "name": "blastinwa",
   "version": "1.0.0",
   "private": true,
-  "description": "Whaticket Community monorepo root",
+  "description": "BlastinWA monorepo root",
   "scripts": {
     "prepare": "husky"
   },

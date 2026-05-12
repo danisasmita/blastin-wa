@@ -8,6 +8,8 @@ import ShowContactService from "../services/ContactServices/ShowContactService";
 import UpdateContactService from "../services/ContactServices/UpdateContactService";
 import DeleteContactService from "../services/ContactServices/DeleteContactService";
 import ListAllContactsService from "../services/ContactServices/ListAllContactsService";
+import BulkDeleteContactsService from "../services/ContactServices/BulkDeleteContactsService";
+import CountContactsForBulkDeleteService from "../services/ContactServices/CountContactsForBulkDeleteService";
 
 import CheckContactNumber from "../services/WbotServices/CheckNumber";
 import CheckIsValidContact from "../services/WbotServices/CheckIsValidContact";
@@ -34,6 +36,11 @@ interface ContactData {
   number: string;
   email?: string;
   extraInfo?: ExtraInfo[];
+}
+
+interface BulkDeleteRequest {
+  contactIds?: number[];
+  searchParam?: string;
 }
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
@@ -172,4 +179,43 @@ export const remove = async (
   });
 
   return res.status(200).json({ message: "Contact deleted" });
+};
+
+export const bulkRemove = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { contactIds = [], searchParam = "" } = req.body as BulkDeleteRequest;
+
+  const deletedIds = await BulkDeleteContactsService({
+    contactIds,
+    searchParam
+  });
+
+  const io = getIO();
+  deletedIds.forEach(contactId => {
+    io.emit("contact", {
+      action: "delete",
+      contactId
+    });
+  });
+
+  return res.status(200).json({
+    deletedIds,
+    count: deletedIds.length
+  });
+};
+
+export const bulkRemovePreview = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const { contactIds = [], searchParam = "" } = req.body as BulkDeleteRequest;
+
+  const count = await CountContactsForBulkDeleteService({
+    contactIds,
+    searchParam
+  });
+
+  return res.status(200).json({ count });
 };

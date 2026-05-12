@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  whaticket:
+  blastinwa:
 
 services:
 
@@ -34,7 +34,7 @@ services:
       - ./backend/public/:/usr/src/app/public/
       - ./backend/.wwebjs_auth/:/usr/src/app/.wwebjs_auth/
     networks:
-      - whaticket
+      - blastinwa
 
   frontend:
     ports:
@@ -53,7 +53,7 @@ services:
       - ./ssl/certs/:/etc/nginx/ssl/
       - ./ssl/www/:/var/www/letsencrypt/
     networks:
-      - whaticket
+      - blastinwa
 
   mysql:
     image: ${MYSQL_ENGINE:-mariadb}:${MYSQL_VERSION:-10.6}
@@ -68,4 +68,4 @@ services:
       - ${MYSQL_PORT:-3306}:3306
     restart: always
     networks:
-      - whaticket
+      - blastinwa

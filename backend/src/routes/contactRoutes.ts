@@ -18,6 +18,12 @@ contactRoutes.get("/contacts/all", isAuth, ContactController.listAll);
 contactRoutes.get("/contacts/:contactId", isAuth, ContactController.show);
 
 contactRoutes.post("/contacts", isAuth, ContactController.store);
+contactRoutes.post(
+  "/contacts/bulk-delete/preview",
+  isAuth,
+  ContactController.bulkRemovePreview
+);
+contactRoutes.post("/contacts/bulk-delete", isAuth, ContactController.bulkRemove);
 
 contactRoutes.post("/contact", isAuth, ContactController.getContact);
 

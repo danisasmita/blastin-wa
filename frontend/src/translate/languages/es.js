@@ -124,6 +124,7 @@ const messages = {
         title: "Contactos",
         toasts: {
           deleted: "¡Contacto borrado satisfactoriamente!",
+          bulkDeleted: "¡{{count}} contactos eliminados correctamente!",
         },
         searchPlaceholder: "Buscar...",
         confirmationModal: {
@@ -133,10 +134,18 @@ const messages = {
             "¿Estás seguro que deseas borrar este contacto? Todos los tickets relacionados se perderán.",
           importMessage:
             "¿Quieres importar todos los contactos desde tu teléfono?",
+          bulkDeleteSelectedTitle: "Eliminar contactos seleccionados",
+          bulkDeleteSelectedMessage:
+            "Estas a punto de eliminar {{count}} contactos seleccionados. Todos los tickets relacionados se perderan.",
+          bulkDeleteFilteredTitle: "Eliminar contactos filtrados",
+          bulkDeleteFilteredMessage:
+            "Estas a punto de eliminar {{count}} contactos que coinciden con el filtro actual. Todos los tickets relacionados se perderan.",
         },
         buttons: {
           import: "Importar Contactos",
           add: "Agregar Contacto",
+          deleteSelected: "Eliminar Seleccionados",
+          deleteFiltered: "Eliminar Filtrados",
         },
         table: {
           name: "Nombre",

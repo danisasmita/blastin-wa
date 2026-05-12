@@ -16,6 +16,7 @@ import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import IconButton from "@material-ui/core/IconButton";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
@@ -103,10 +104,14 @@ const Contacts = () => {
   const [deletingContact, setDeletingContact] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [selectedContactIds, setSelectedContactIds] = useState([]);
+  const [confirmAction, setConfirmAction] = useState("import");
+  const [bulkDeletePreviewCount, setBulkDeletePreviewCount] = useState(0);
 
   useEffect(() => {
     dispatch({ type: "RESET" });
     setPageNumber(1);
+    setSelectedContactIds([]);
   }, [searchParam]);
 
   useEffect(() => {
@@ -194,6 +199,31 @@ const Contacts = () => {
     setPageNumber(1);
   };
 
+  const handleBulkDelete = async () => {
+    try {
+      const payload =
+        confirmAction === "selected"
+          ? { contactIds: selectedContactIds }
+          : { searchParam };
+
+      const { data } = await api.post("/contacts/bulk-delete", payload);
+
+      toast.success(
+        i18n.t("contacts.toasts.bulkDeleted", {
+          count: data.count || 0,
+        })
+      );
+      setSelectedContactIds([]);
+      dispatch({ type: "RESET" });
+      setPageNumber(1);
+    } catch (err) {
+      toastError(err);
+    }
+
+    setDeletingContact(null);
+    setConfirmAction("import");
+  };
+
   const handleimportContact = async () => {
     try {
       await api.post("/contacts/import");
@@ -215,6 +245,43 @@ const Contacts = () => {
     }
   };
 
+  const isAllSelected =
+    contacts.length > 0 && contacts.every(contact => selectedContactIds.includes(contact.id));
+
+  const handleToggleAll = () => {
+    if (isAllSelected) {
+      setSelectedContactIds([]);
+      return;
+    }
+
+    setSelectedContactIds(contacts.map(contact => contact.id));
+  };
+
+  const handleToggleContact = contactId => {
+    setSelectedContactIds(prevState =>
+      prevState.includes(contactId)
+        ? prevState.filter(id => id !== contactId)
+        : [...prevState, contactId]
+    );
+  };
+
+  const handleOpenBulkDeleteConfirm = async action => {
+    try {
+      const payload =
+        action === "selected"
+          ? { contactIds: selectedContactIds }
+          : { searchParam };
+
+      const { data } = await api.post("/contacts/bulk-delete/preview", payload);
+      setBulkDeletePreviewCount(data.count || 0);
+      setDeletingContact(null);
+      setConfirmAction(action);
+      setConfirmOpen(true);
+    } catch (err) {
+      toastError(err);
+    }
+  };
+
   return (
     <MainContainer className={classes.mainContainer}>
       <ContactModal
@@ -229,6 +296,10 @@ const Contacts = () => {
             ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${
                 deletingContact.name
               }?`
+            : confirmAction === "selected"
+            ? i18n.t("contacts.confirmationModal.bulkDeleteSelectedTitle")
+            : confirmAction === "filtered"
+            ? i18n.t("contacts.confirmationModal.bulkDeleteFilteredTitle")
             : `${i18n.t("contacts.confirmationModal.importTitlte")}`
         }
         open={confirmOpen}
@@ -236,11 +307,21 @@ const Contacts = () => {
         onConfirm={e =>
           deletingContact
             ? handleDeleteContact(deletingContact.id)
-            : handleimportContact()
+            : confirmAction === "import"
+            ? handleimportContact()
+            : handleBulkDelete()
         }
       >
         {deletingContact
           ? `${i18n.t("contacts.confirmationModal.deleteMessage")}`
+          : confirmAction === "selected"
+          ? i18n.t("contacts.confirmationModal.bulkDeleteSelectedMessage", {
+              count: bulkDeletePreviewCount,
+            })
+          : confirmAction === "filtered"
+          ? i18n.t("contacts.confirmationModal.bulkDeleteFilteredMessage", {
+              count: bulkDeletePreviewCount,
+            })
           : `${i18n.t("contacts.confirmationModal.importMessage")}`}
       </ConfirmationModal>
       <MainHeader>
@@ -262,10 +343,41 @@ const Contacts = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={e => setConfirmOpen(true)}
+            onClick={e => {
+              setConfirmAction("import");
+              setConfirmOpen(true);
+            }}
           >
             {i18n.t("contacts.buttons.import")}
           </Button>
+          <Can
+            role={user.profile}
+            perform="contacts-page:deleteContact"
+            yes={() => (
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={selectedContactIds.length === 0}
+                onClick={() => handleOpenBulkDeleteConfirm("selected")}
+              >
+                {i18n.t("contacts.buttons.deleteSelected")}
+              </Button>
+            )}
+          />
+          <Can
+            role={user.profile}
+            perform="contacts-page:deleteContact"
+            yes={() => (
+              <Button
+                variant="contained"
+                color="secondary"
+                disabled={!searchParam.trim()}
+                onClick={() => handleOpenBulkDeleteConfirm("filtered")}
+              >
+                {i18n.t("contacts.buttons.deleteFiltered")}
+              </Button>
+            )}
+          />
           <Button
             variant="contained"
             color="primary"
@@ -283,7 +395,16 @@ const Contacts = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox" />
+              <TableCell padding="checkbox">
+                <Checkbox
+                  indeterminate={
+                    selectedContactIds.length > 0 && !isAllSelected
+                  }
+                  checked={isAllSelected}
+                  onChange={handleToggleAll}
+                  color="primary"
+                />
+              </TableCell>
               <TableCell>{i18n.t("contacts.table.name")}</TableCell>
               <TableCell align="center">
                 {i18n.t("contacts.table.whatsapp")}
@@ -301,7 +422,14 @@ const Contacts = () => {
               {contacts.map(contact => (
                 <TableRow key={contact.id}>
                   <TableCell style={{ paddingRight: 0 }}>
-                    {<Avatar src={contact.profilePicUrl} />}
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        checked={selectedContactIds.includes(contact.id)}
+                        onChange={() => handleToggleContact(contact.id)}
+                        color="primary"
+                      />
+                      <Avatar src={contact.profilePicUrl} />
+                    </div>
                   </TableCell>
                   <TableCell>{contact.name}</TableCell>
                   <TableCell align="center">{contact.number}</TableCell>
