@@ -22,9 +22,23 @@ interface Request {
 const CreateMessageService = async ({
   messageData
 }: Request): Promise<Message> => {
-  await Message.upsert(messageData);
+  const normalizedMessageData = { ...messageData };
 
-  const message = await Message.findByPk(messageData.id, {
+  // Some providers send quoted message ids for messages we have not stored yet.
+  // Dropping the dangling reference avoids a FK failure and preserves the message.
+  if (normalizedMessageData.quotedMsgId) {
+    const quotedMessageExists = await Message.findByPk(
+      normalizedMessageData.quotedMsgId
+    );
+
+    if (!quotedMessageExists) {
+      normalizedMessageData.quotedMsgId = undefined;
+    }
+  }
+
+  await Message.upsert(normalizedMessageData);
+
+  const message = await Message.findByPk(normalizedMessageData.id, {
     include: [
       "contact",
       {
