@@ -6,6 +6,7 @@ import {
 } from "../../helpers/CreateTokens";
 import { SerializeUser } from "../../helpers/SerializeUser";
 import Queue from "../../models/Queue";
+import { loadUserWithRelations } from "./helpers/loadUserWithRelations";
 
 interface SerializedUser {
   id: number;
@@ -30,10 +31,7 @@ const AuthUserService = async ({
   email,
   password
 }: Request): Promise<Response> => {
-  const user = await User.findOne({
-    where: { email },
-    include: ["queues"]
-  });
+  const user = await User.findOne({ where: { email } });
 
   if (!user) {
     throw new AppError("ERR_INVALID_CREDENTIALS", 401);
@@ -46,7 +44,8 @@ const AuthUserService = async ({
   const token = createAccessToken(user);
   const refreshToken = createRefreshToken(user);
 
-  const serializedUser = SerializeUser(user);
+  const userWithRelations = (await loadUserWithRelations(user.id)) || user;
+  const serializedUser = SerializeUser(userWithRelations);
 
   return {
     serializedUser,
