@@ -191,12 +191,11 @@ const Contacts = () => {
     try {
       await api.delete(`/contacts/${contactId}`);
       toast.success(i18n.t("contacts.toasts.deleted"));
+      dispatch({ type: "DELETE_CONTACT", payload: contactId });
     } catch (err) {
       toastError(err);
     }
     setDeletingContact(null);
-    setSearchParam("");
-    setPageNumber(1);
   };
 
   const handleBulkDelete = async () => {
@@ -213,9 +212,18 @@ const Contacts = () => {
           count: data.count || 0,
         })
       );
+      
+      if (confirmAction === "selected") {
+        selectedContactIds.forEach(id => {
+          dispatch({ type: "DELETE_CONTACT", payload: id });
+        });
+      } else {
+        dispatch({ type: "RESET" });
+        setPageNumber(1);
+        setSearchParam("");
+      }
+      
       setSelectedContactIds([]);
-      dispatch({ type: "RESET" });
-      setPageNumber(1);
     } catch (err) {
       toastError(err);
     }
